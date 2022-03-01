@@ -1,4 +1,4 @@
-module MyLib where
+module Formula where
 
 data Formula = Atom String | T | F | Not Formula | Formula :&: Formula | Formula :|: Formula | Formula :=>: Formula | Formula :<=>: Formula
     deriving (Eq, Show)
@@ -9,14 +9,15 @@ to_nnf F = F
 to_nnf (Not (Atom s)) = Not (Atom s)
 to_nnf (Not T) = F
 to_nnf (Not F) = T
+to_nnf (Not (Not a)) = to_nnf a
 to_nnf (Not (a :&: b)) = (to_nnf (Not a)) :|: (to_nnf (Not b))
 to_nnf (Not (a :|: b)) = (to_nnf(Not a)) :&: (to_nnf (Not b))
 to_nnf (Not (a :=>: b)) = to_nnf (Not ((Not a) :|: b))
 to_nnf (Not (a :<=>: b)) = to_nnf (Not ((a :=>: b) :&: (b :=>: a)))
 to_nnf (a :&: b) = (to_nnf a) :&: (to_nnf b)
 to_nnf (a :|: b) = (to_nnf a) :|: (to_nnf b)
-to_nnf (a :=>: b) = (to_nnf a) :=>: (to_nnf b)
-to_nnf (a :<=>: b) = (to_nnf a) :<=>: (to_nnf b)
+to_nnf (a :=>: b) = to_nnf ((Not a) :|: b)
+to_nnf (a :<=>: b) = to_nnf ((a :=>: b) :&: (b :=>: a))
 
 to_dnf = apply_rules . to_nnf where
     apply_rules (Atom s) = Atom s
