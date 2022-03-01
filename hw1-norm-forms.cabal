@@ -36,5 +36,5 @@ test-suite hw1-norm-forms-test
     default-language: Haskell2010
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
-    main-is:          MyLibTest.hs
+    main-is:          FormulaTests.hs
     build-depends:    tasty, tasty-hunit, mylib
